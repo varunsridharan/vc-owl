@@ -9,6 +9,20 @@ if( ! defined("ABSPATH") ) {
     die;
 }
 
+if( ! function_exists('vc_owl_remap_settings') ) {
+    function vc_owl_remap_settings($atts) {
+        $orginal = WPBakeryShortCode_vc_owlcarousel::set();
+        $return  = array();
+        foreach( $orginal as $key => $value ) {
+            $k = strtolower($key);
+            if( isset($atts[$k]) ) {
+                $return[$key] = $atts[$k];
+            }
+        }
+        return $return;
+    }
+}
+
 if( ! class_exists('Visual_Composer_OWL') ) {
     class Visual_Composer_OWL {
         private static $_instance = NULL;
@@ -21,20 +35,10 @@ if( ! class_exists('Visual_Composer_OWL') ) {
         }
 
         public function __construct() {
-            add_action('init', array( &$this, 'wp_init' ));
+            add_action('init', array( &$this, 'wp_init' ),1);
         }
 
-        private function handle_shortcode_atts($atts = array()) {
-            $orginal = WPBakeryShortCode_vc_owlcarousel::set();
-            $return  = array();
-            foreach( $orginal as $key => $value ) {
-                $k = strtolower($key);
-                if( isset($atts[$k]) ) {
-                    $return[$key] = $atts[$k];
-                }
-            }
-            return $return;
-        }
+
 
         public function wp_init() {
             vsp_load_file(VC_OWL_PATH . 'includes/class-*.php');
@@ -42,12 +46,6 @@ if( ! class_exists('Visual_Composer_OWL') ) {
 
             vc_map($mapper->shortcode_args());
 
-            add_shortcode('vc_owlcarousel', function($atts, $content = NULL) {
-                $settings       = shortcode_atts(WPBakeryShortCode_vc_owlcarousel::set(), $this->handle_shortcode_atts($atts));
-                $settings['id'] = 'vc_owlcarousel_' . uniqid();
-                wp_localize_script('vc_owlcarousel_init', $settings['id'], $settings);
-                return '<div class="' . $settings['id'] . ' owl-carousel owl-theme vc_owlcarousels" data-settings="' . $settings['id'] . '">' . do_shortcode($content) . '</div>';
-            });
 
 
             vc_map(array(
@@ -68,9 +66,6 @@ if( ! class_exists('Visual_Composer_OWL') ) {
 
             ));
 
-            add_shortcode('vc_owlcarousel_item', function($atts, $content = NULL) {
-                return '<div class="item">' . do_shortcode($content) . '</div>';
-            });
 
             wp_register_script('vc_owlcarousel_js', VC_OWL_URL . 'assets/owl.carousel.js', array( 'jquery' ), FALSE, TRUE);
             wp_enqueue_script('vc_owlcarousel_init', VC_OWL_URL . 'assets/owl.carousel.init.js', array( 'vc_owlcarousel_js' ), FALSE, TRUE);

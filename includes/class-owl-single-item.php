@@ -115,5 +115,9 @@ class WPBakeryShortCode_vc_owlcarousel_item extends WPBakeryShortCodesContainer 
         return 'wpb_' . $this->settings['base'] . $sortable . '' . ( ! empty($this->settings['class']) ? ' ' . $this->settings['class'] : '' );
     }
 
+    protected function content($atts, $content = NULL) {
+        return '<div class="item">' . do_shortcode($content) . '</div>';
+    }
+
 
 }

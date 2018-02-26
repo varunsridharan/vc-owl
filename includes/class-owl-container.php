@@ -7,6 +7,7 @@
  */
 
 class WPBakeryShortCode_vc_owlcarousel extends WPBakeryShortCode {
+
     protected $controls_css_settings = 'tc vc_control-container';
     protected $controls_list         = array( 'edit', 'clone', 'delete' );
 
@@ -129,4 +130,14 @@ class WPBakeryShortCode_vc_owlcarousel extends WPBakeryShortCode {
 
         return $output;
     }
+
+    protected function content($atts, $content = NULL) {
+        $settings = shortcode_atts(self::set(), vc_owl_remap_settings($atts));
+        $settings['id'] = 'vc_owlcarousel_' . uniqid();
+        wp_localize_script('vc_owlcarousel_init', $settings['id'], $settings);
+        $output = '<div class="' . $settings['id'] . ' owl-carousel owl-theme vc_owlcarousels" data-settings="' . $settings['id'] . '">';
+        $output .= do_shortcode($content);
+        return $output . '</div>';
+    }
+
 }

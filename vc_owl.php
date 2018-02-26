@@ -26,6 +26,7 @@ if( ! function_exists('vc_owl') ) {
      * Returns Instance of OWL
      */
     require_once( VC_OWL_PATH . 'bootstrap.php' );
+
     function vc_owl() {
         return Visual_Composer_OWL::instance();
     }
